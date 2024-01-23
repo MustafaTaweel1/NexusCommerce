@@ -12,6 +12,7 @@ namespace Store.DataAccess.Data
         public DbSet<Category> categories { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<AppUser> appUsers { get; set; }
+        public DbSet<Company> companies { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

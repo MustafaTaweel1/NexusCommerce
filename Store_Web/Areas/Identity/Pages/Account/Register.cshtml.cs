@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Store.DataAccess.Repository;
+using Store.DataAccess.Repository.IRepository;
 using Store.Models;
 using Store.Utility;
 
@@ -33,6 +35,7 @@ namespace Store_Web.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IUnitOfWork _unitOfWork;
 
         private readonly RoleManager<IdentityRole> _roleManager;   
 
@@ -42,8 +45,13 @@ namespace Store_Web.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IUnitOfWork unitofwork
+
+            )
+            
         {
+
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -51,6 +59,7 @@ namespace Store_Web.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _unitOfWork = unitofwork;
         }
 
         /// <summary>
@@ -108,6 +117,20 @@ namespace Store_Web.Areas.Identity.Pages.Account
             public string? Role {  get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
+
+            //add more attrubite in register
+            [Required]
+            public string name { get; set; }
+            public string PhoneNumber { get; set; }
+            public string? StreetAddress { get; set; }
+            public string? City { get; set; }
+            public string? State { get; set; }
+            public string? PostalCode { get; set; }
+
+            public int? CompanyId { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompamyList {get; set;}
+
         }
 
 
@@ -126,7 +149,12 @@ namespace Store_Web.Areas.Identity.Pages.Account
                 {
                     Text = i,
                     Value = i.ToString()
-                })
+                }),
+                 CompamyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
+                 {
+                     Text = i.Name,
+                     Value = i.Id.ToString()
+                 })
             };
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -142,6 +170,18 @@ namespace Store_Web.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                //add more title in register
+                user.State = Input.State;
+               
+                user.PostalCode = Input.PostalCode;
+                user.City = Input.City;
+                user.name = Input.name;
+                user.StreetAddress = Input.StreetAddress;
+                if(Input.Role==SD.Role_Company)
+                {
+                    user.CompanyId= Input.CompanyId;
+                }
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

@@ -35,8 +35,9 @@
                             <ul class="dropdown-menu">
                                 <li><a asp-area="Admin" asp-controller="Product" asp-action="Index" class="dropdown-item">Product</a></li>
                                 <li><a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a></li>
+@*                                 <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li> *@
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -59,6 +60,7 @@
 
     <div class="container">
         <main role="main" class="pb-3">
+            <partial name="_Notification" />
             @RenderBody()
         </main>
     </div>
