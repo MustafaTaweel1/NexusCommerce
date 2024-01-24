@@ -11,8 +11,11 @@ namespace Store.DataAccess.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<Category> categories { get; set; }
         public DbSet<Product> products { get; set; }
-        public DbSet<AppUser> appUsers { get; set; }
+
         public DbSet<Company> companies { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts {  get; set; }
+        //account for website 
+        public DbSet<AppUser> appUsers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
