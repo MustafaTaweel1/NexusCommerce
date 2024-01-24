@@ -59,7 +59,7 @@ namespace Store.DataAccess.Repository
 
         }
 
-
+            //get all use in Api 
         public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
