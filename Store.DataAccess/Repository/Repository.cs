@@ -8,6 +8,7 @@ using Store.DataAccess.Data;
 using System.Linq.Expressions;
 using Store.DataAccess.Repository.IRepository;
 using System.Diagnostics;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Store.DataAccess.Repository
 {
@@ -40,11 +41,20 @@ namespace Store.DataAccess.Repository
           dbSet.RemoveRange(entities);
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null,bool tracked=false)
         {
-            IQueryable<T> query= dbSet;
+            IQueryable<T> query;
+            if (tracked)
+            {
+               query = dbSet;
 
-      
+            }
+            else
+            {
+              query = dbSet.AsNoTracking();
+            }
+
+
 
             query = query.Where(filter);
             if (!string.IsNullOrEmpty(includeProperties))
@@ -63,6 +73,10 @@ namespace Store.DataAccess.Repository
         public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+            if(filter != null)
+            {
+                query=query.Where(filter);
+            }
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProp in includeProperties
